@@ -18,17 +18,21 @@ void setup() {
 }
 
 
-void loop() {
-
+void prepareDisplay() {
   display.clearDisplay();
-
   display.setTextSize(1);
-
   display.setTextColor(BLACK);
 
-  display.setCursor(0,0);
+}
 
+void loop() {
+
+  display.setCursor(0,0);
   display.println("Test");
+
+
+  display.drawLine(0, 46, display.width() / 3, 46, BLACK);
+  display.drawRoundRect(0, 45, display.width(), 3, 1, BLACK);
 
   display.display();
 
