@@ -25,14 +25,19 @@ void prepareDisplay() {
 
 }
 
+void progressBar() {
+  // Add percent param later on
+  display.drawLine(0, 46, display.width() / 3, 46, BLACK);
+  display.drawRoundRect(0, 45, display.width(), 3, 1, BLACK);
+}
+
 void loop() {
+
+  prepareDisplay();
+  progressBar();
 
   display.setCursor(0,0);
   display.println("Test");
-
-
-  display.drawLine(0, 46, display.width() / 3, 46, BLACK);
-  display.drawRoundRect(0, 45, display.width(), 3, 1, BLACK);
 
   display.display();
 
