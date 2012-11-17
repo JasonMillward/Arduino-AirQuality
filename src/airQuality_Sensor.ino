@@ -26,6 +26,8 @@ int delayTime     = 280;
 int delayTime2    = 40;
 int dustVal       = 0;
 
+int sensorValue   = 0;
+
 float ppm         = 0;
 float offTime     = 9680;
 
@@ -35,6 +37,8 @@ float ppmpercf    = 0;
 
 
 void setup() {
+  Serial.begin(9600);
+
   Wire.begin();
   RTC.begin();
 
@@ -60,10 +64,16 @@ void loop() {
   displayTitle();
   displayTemp();
   displayHumidity();
-
+  readCOSensor();
   displayDustText();
   display.display();
   delay(2000);
+}
+
+void readCOSensor() {
+  sensorValue = analogRead(2);
+  Serial.println(sensorValue);
+  delay(1000);
 }
 
 void prepareDisplay() {
@@ -77,10 +87,11 @@ void displayTitle() {
   display.setCursor(0,0);
 
   DateTime now = RTC.now();
-  sprintf(buf, "%i:%i:%i",
-                now.hour(),
-                now.minute(),
-                now.second()
+  sprintf(buf,
+          "%i:%i:%i",
+          now.hour(),
+          now.minute(),
+          now.second()
   );
 
   display.println(buf);
@@ -89,13 +100,16 @@ void displayTitle() {
 }
 
 void displayTemp() {
-  display.setCursor(0,19);
+  display.setCursor(0, 19);
 
   DHT22_ERROR_t errorCode;
   errorCode = myDHT22.readData();
 
-  sprintf(buf, "Temp:  %hi.%01hi$",
-                myDHT22.getTemperatureCInt()/10, abs(myDHT22.getTemperatureCInt()%10));
+  sprintf(buf,
+          "Temp:  %hi.%01hi$",
+          myDHT22.getTemperatureCInt() / 10,
+          abs( myDHT22.getTemperatureCInt() % 10 )
+  );
   display.println(buf);
 
 }
@@ -106,8 +120,9 @@ void displayHumidity() {
   DHT22_ERROR_t errorCode;
   errorCode = myDHT22.readData();
 
-  sprintf(buf, "Humid: %i.%01i%%",
-                myDHT22.getHumidityInt()/10, myDHT22.getHumidityInt()%10);
+  sprintf(buf,
+          "Humid: %i.%01i%%",
+          myDHT22.getHumidityInt()/10, myDHT22.getHumidityInt()%10);
 
   display.println(buf);
 }
@@ -138,19 +153,34 @@ void displayDustText() {
   }
 
   if ( ppmpercf < 75 ) {
-    sprintf(buf, "Dust:  None" );
+    sprintf(buf,
+            "Dust:  None"
+    );
   } else if( ppmpercf > 75 && ppmpercf < 150 ) {
-    sprintf(buf, "Dust:  V Low" );
+    sprintf(buf,
+            "Dust:  V Low"
+    );
   } else if( ppmpercf > 150 && ppmpercf < 300 ) {
-    sprintf(buf, "Dust:  Low" );
+    sprintf(buf,
+            "Dust:  Low"
+    );
   } else if( ppmpercf > 300 && ppmpercf < 1050 ) {
-    sprintf(buf, "Dust:  Med" );
+    sprintf(buf,
+            "Dust:  Med"
+    );
   } else if( ppmpercf > 1050 && ppmpercf < 3000   ) {
-    sprintf(buf, "Dust:  High" );
+    sprintf(buf,
+            "Dust:  High"
+    );
   } else if ( ppmpercf < 3000 ) {
-    sprintf(buf, "Dust:  V High" );
+    sprintf(buf,
+            "Dust:  V High"
+    );
   } else {
-    sprintf(buf, "Unknown %i", ppmpercf);
+    sprintf(buf,
+            "Unknown %i",
+            ppmpercf
+    );
   }
 
   display.println(buf);
