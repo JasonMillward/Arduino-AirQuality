@@ -7,12 +7,30 @@
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h>
+#include <DHT22.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <stdlib.h>
+#include "<RTClib.h>"
 
 
 Adafruit_PCD8544 display = Adafruit_PCD8544(7, 6, 5, 4, 3);
+DHT22 myDHT22(8);
+RTC_DS1307 RTC;
 
+char buf[128];
 
 void setup() {
+  Wire.begin();
+  RTC.begin();
+
+  if (! RTC.isrunning()) {
+    Serial.println("RTC is NOT running!");
+
+    // Set the RTC to the date & time this sketch was compiled
+    RTC.adjust(DateTime(__DATE__, __TIME__));
+  }
+
   display.begin();
   display.setContrast(60);
 }
@@ -40,18 +58,35 @@ void prepareDisplay() {
 
 void displayTitle() {
   display.setCursor(0,0);
-  display.println("Air Sensors");
+
+  DateTime now = RTC.now();
+  sprintf(buf, "%i:%i:%i",
+                now.hour(),
+                now.minute(),
+                now.second()
+  );
+
+  display.println(buf);
+
   display.drawLine(0, 8, display.width(), 8, BLACK);
 }
 
 void displayTemp() {
   display.setCursor(0,11);
-  display.println("Temp:  30*");
+
+  sprintf(buf, "Temp:  %hi.%01hi$",
+                myDHT22.getTemperatureCInt()/10, abs(myDHT22.getTemperatureCInt()%10));
+  display.println(buf);
+
 }
 
 void displayHumidity() {
   display.setCursor(0,8);
-  display.println("Humid: 10%");
+
+  sprintf(buf, "Humid: %i.%01i%%",
+                myDHT22.getHumidityInt()/10, myDHT22.getHumidityInt()%10);
+
+  display.println(buf);
 }
 
 void progressBar() {
