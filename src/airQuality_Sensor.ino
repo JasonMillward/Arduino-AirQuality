@@ -70,12 +70,6 @@ void loop() {
   delay(2000);
 }
 
-void readCOSensor() {
-  sensorValue = analogRead(2);
-  Serial.println(sensorValue);
-  delay(1000);
-}
-
 void prepareDisplay() {
   display.clearDisplay();
   display.setTextSize(1);
@@ -127,21 +121,27 @@ void displayHumidity() {
   display.println(buf);
 }
 
+void readCOSensor() {
+  sensorValue = analogRead(2);
+  Serial.println(sensorValue);
+  delay(1000);
+}
+
 void displayDustText() {
-  display.setCursor(0,27);
+  display.setCursor(0, 27);
 
-  digitalWrite(ledPower,LOW);
+  digitalWrite(ledPower,LOW );
 
-  delayMicroseconds(delayTime);
+  delayMicroseconds(delayTime );
 
-  dustVal=analogRead(dustPin);
-  ppm = ppm+dustVal;
+  dustVal = analogRead(dustPin );
+  ppm     = ppm+dustVal;
 
-  delayMicroseconds(delayTime2);
+  delayMicroseconds(delayTime2 );
 
-  digitalWrite(ledPower,HIGH);
+  digitalWrite(ledPower, HIGH );
 
-  delayMicroseconds(offTime);
+  delayMicroseconds(offTime );
 
   voltage       = ppm / 1 * 0.0049;
   ppmpercf      = ( voltage - 0.0256 ) * 120000;
@@ -183,7 +183,7 @@ void displayDustText() {
     );
   }
 
-  display.println(buf);
+  display.println( buf );
 
 }
 
