@@ -25,6 +25,7 @@ void loop() {
 
   displayTitle();
   displayTemp();
+  displayHumidity();
 
   display.display();
   delay(2000);
@@ -46,6 +47,11 @@ void displayTitle() {
 void displayTemp() {
   display.setCursor(0,11);
   display.println("Temp:  30*");
+}
+
+void displayHumidity() {
+  display.setCursor(0,8);
+  display.println("Humid: 10%");
 }
 
 void progressBar() {
